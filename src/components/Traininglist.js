@@ -4,6 +4,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { AgGridReact } from'ag-grid-react'
 import'ag-grid-community/dist/styles/ag-grid.css'
 import'ag-grid-community/dist/styles/ag-theme-material.css';
+import DeleteIcon from "@material-ui/icons/Delete";
 
 export default function Traininglist() {
 	const [trainings, setTrainings] = useState([]);
@@ -38,14 +39,14 @@ export default function Traininglist() {
 	const columnDefs = [
 		{ headerName: 'Training',
 		  children: [
-	
-	
+			
 		{
-			title: "Date",
+			headerName: "Date",
 			field: "date",
 			sortable: true,
 			filter: true,
 			floatingFilter: true,
+
 			render: rowdate => (
 				<Moment format="DD/MM/YYYY HH:mm">{rowdate.date}</Moment>
 			)
@@ -69,25 +70,24 @@ export default function Traininglist() {
 		},
 
 		{
-			headerName: "Customer",
-			field: "customer.firstname, customer.lastname",
-			sortable: true,
-			filter: true,
-			floatingFilter: true,
+			title: "Customer",
+			field: "customers",
 			render: row => (
 				<span>{row.customer.firstname + " " + row.customer.lastname}</span>
 			)
 		},
 		{
-			render: rowData => (
-
-				<button
+			title: "DELETE",
+			field: "delete",
+			cellRenderer: (params) => (
+				<DeleteIcon
 					style={{ cursor: "pointer" }}
-					onClick={() => deleteTraining(rowData.id)}
-				>Delete</button>
+					onClick={() => deleteTraining(params.data.links[0].href)}
+				></DeleteIcon>
 			),
-				sorting: false
+			sorting: false
 		},
+	
 	]
   }];
 
@@ -101,6 +101,7 @@ export default function Traininglist() {
 	margin: 'auto'    }}
     >
 	   <AgGridReact
+	   title="Trainings"
 		 rowData={trainings}
 		 columnDefs={columnDefs}
 		 defaultColDef={defaultColDef}

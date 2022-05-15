@@ -85,13 +85,13 @@ export default function Customerlist() {
 	const columnDefs = [
 		{ headerName: 'Customers',
 		  children: [
-		 /* {
+		 {
 	  
 			headerName: 'Edit',
 			valueGetter: (params) => params.data.links[0].href,
 			cellRenderer: (params) => <Editcustomer updateCustomer={updateCustomer} customer={params.data} />,
 			sortable: false,
-		  },*/
+		  },
 		  {
 			headerName: 'First name',
 			field: 'firstname',
@@ -143,7 +143,7 @@ export default function Customerlist() {
 			floatingFilter: true
 		  },
 		  
-		  /*{
+		  {
 			headerName: 'Delete',
 			valueGetter: (params) => params.data.links[0].href,
 			cellRenderer: (params) => (
@@ -152,8 +152,8 @@ export default function Customerlist() {
 				></DeleteIcon>
 			),
 			sortable: false,
-		  },*/
-		  /*{
+		  },
+		  {
 			headerName: 'Add training',
 			valueGetter: (params) => params.data.links[0].href,
 			cellRenderer: (params) => (
@@ -163,7 +163,7 @@ export default function Customerlist() {
 			  />
 			),
 			sortable: false,
-		  },*/
+		  },
 		]
 	  }];
 
