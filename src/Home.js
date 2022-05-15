@@ -1,8 +1,9 @@
 import React from "react";
-import Home from ".//Home";
-import Customerlist from ".//components/Customerlist";
-import Traininglist from ".//components/Traininglist";
+import Home from "./Home";
+import Customerlist from "./components/Customerlist";
+import Traininglist from "./components/Traininglist";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Etusivu = () => {
 	return (
@@ -14,11 +15,11 @@ const Etusivu = () => {
 			<center>
             <Link to="/">Home</Link>{' '}
             <Link to="/components/Customerlist">Customers</Link>{' '} 
-			<Link to="/Traininglist">Trainings</Link>{' '} </center>
+			<Link to="/components/Traininglist">Trainings</Link>{' '} </center>
 					<Routes>
-						<Route exact path="/components/" element={<Home />} />
+						<Route exact path="/" element={<Home />} />
 						<Route exact path="/components/Customerlist" element={<Customerlist />} />
-						<Route exact path="/Traininglist" element={<Traininglist />} />
+						<Route exact path="/component/Traininglist" element={<Traininglist />} />
 					</Routes>
 			</BrowserRouter>
 		</div>

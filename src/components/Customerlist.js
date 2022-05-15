@@ -1,68 +1,189 @@
-import React, { useState } from 'react';
-import {AgGridReact} from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
-import { useRef } from 'react';
+import React, { useState, useEffect } from "react";
+import Snackbar from '@material-ui/core/Snackbar';
+import Addcustomer from "./Addcustomer";
+import Addtraining from "./Addtraining";
+import Editcustomer from "./Editcustomer";
+import { AgGridReact } from'ag-grid-react'
+import'ag-grid-community/dist/styles/ag-grid.css'
+import'ag-grid-community/dist/styles/ag-theme-material.css';
+import DeleteIcon from "@material-ui/icons/Delete";
 
+export default function Customerlist() {
+	const [customers, setCustomers] = useState([]);
 
-function CustomerList() {
-  const [customer, setCustomer] = useState({Name: '', Phonenumber: '', Email:''});
-  const [customers, setCustomers] = useState([]);
-  const gridRef = useRef();
+	useEffect(() => fetchData(), []);
 
-  const inputChanged = (event) => {
-    setCustomer({...customer, [event.target.name]: event.target.value});
-  }
+	const fetchData = () => {
+		fetch('https://customerrest.herokuapp.com/api/customers')
+			.then(response => response.json())
+			.then(data => setCustomers(data.content));
+	};
 
-  const addCustomer = (event) => {
-    setCustomers([...customers, customer]);
-  }
-  const deleteCustomer = () => {
-    if (gridRef.current.getSelectedNodes().length > 0) {    
-      setCustomers(customers.filter((customer, index) =>      
-      index !== gridRef.current.getSelectedNodes()[0].childIndex))  }
-      else {    alert('Select row first');  
-    }
-  }
-  
+	const deleteCustomer = link => {
+		if (window.confirm("Are you sure to delete customer?")) {
+			console.log(link);
+			fetch(link, { method: "DELETE" })
+				.then(res => {
 
-  const columns = [
-    
-    {headerName: 'Name', field: 'name', sortable: true, filter: true, floatingFilter: true},
-    {headerName: 'Phonenumber', field: 'phonenumber', sortable: true, filter: true, floatingFilter: true, rowAnimation: true},
-    {headerName: 'Email', field: 'email', sortable: true, filter: true, floatingFilter: true, rowAnimation: true}
- 
-    
-  ]
- 
-  return (
-    <div className="App">
-      <center><input type="text" name="name" placeholder="Customer name.." value={customer.Name} onChange={inputChanged} />
-      <input type="text" name="phonenumber"  placeholder="Customer phonenumber" value={customer.Phonenumber} onChange={inputChanged} />
-      <input type="text" name="email"  placeholder="Email" value={customer.Email} onChange={inputChanged} /></center>
-      <center><button onClick={addCustomer}>Add customer</button>
-      <button onClick={deleteCustomer}>Delete customer</button></center>
-      
-    <div
+					fetchData();
+					if (res.status >= 200 && res.status < 300) {
+						Snackbar({ message: "Customer deleted successfully" });
+					} else {
+						Snackbar({ message: "Error. Try again." });
+					}
+				})
+					.catch(err => console.error(err));
+		}
+	};
+
+	const saveCustomer = customer => {
+		fetch('https://customerrest.herokuapp.com/api/customers', {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(customer)
+		})
+			.then(res => {
+				fetchData();
+				if (res.status >= 200 && res.status < 300) {
+					Snackbar({ message: "Customer added successfully" });
+				} else {
+					Snackbar({ message: "Error. Try again." });
+				}
+			})
+				.catch(err => console.error(err));
+	};
+
+		const saveTraining = training => {
+		fetch('https://customerrest.herokuapp.com/api/trainings', {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(training)
+		})
+
+		.then(res => {
+			fetchData();
+			if (res.status >= 200 && res.status < 300) {
+				Snackbar({ message: "Training added successfully" });
+				} else {
+				Snackbar({ message: "Error. Try again." });
+				}
+			})
+			.catch(err => console.error(err));
+	};
+
+		const updateCustomer = (customer, link) => {
+		fetch(link, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(customer)
+		})
+			.then(res => fetchData())
+			.then(Snackbar({ message: "Customer updated successfully" }))
+			.catch(err => console.error(err));
+	};
+	const defaultColDef={ sortable: true }
+	const columnDefs = [
+		{ headerName: 'Customers',
+		  children: [
+		 /* {
+	  
+			headerName: 'Edit',
+			valueGetter: (params) => params.data.links[0].href,
+			cellRenderer: (params) => <Editcustomer updateCustomer={updateCustomer} customer={params.data} />,
+			sortable: false,
+		  },*/
+		  {
+			headerName: 'First name',
+			field: 'firstname',
+			sortable: true,
+			filter: true,
+			floatingFilter: true
+		  },
+		  {
+			headerName: 'Last name',
+			field: 'lastname',
+			sortable: true,
+			filter: true,
+			floatingFilter: true
+		  },
+		  {
+			headerName: 'Email',
+			field: 'email',
+			sortable: true,
+			filter: true,
+			floatingFilter: true
+		  },
+		  {
+			headerName: 'Phone',
+			field: 'phone',
+			sortable: true,
+			filter: true,
+			floatingFilter: true
+		  },
+		  {
+			headerName: 'Address',
+			field: 'streetaddress',
+			sortable: true,
+			filter: true,
+			floatingFilter: true
+		  },
+		  {
+			headerName: 'Postcode',
+			field: 'postcode',
+			sortable: true,
+			filter: true,
+			floatingFilter: true
+		  },
+		  
+		  {
+			headerName: 'City',
+			field: 'city',
+			sortable: true,
+			filter: true,
+			floatingFilter: true
+		  },
+		  
+		  /*{
+			headerName: 'Delete',
+			valueGetter: (params) => params.data.links[0].href,
+			cellRenderer: (params) => (
+			  <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => deleteCustomer(params.data.links[0].href)}
+				Delete
+				></DeleteIcon>
+			),
+			sortable: false,
+		  },*/
+		  /*{
+			headerName: 'Add training',
+			valueGetter: (params) => params.data.links[0].href,
+			cellRenderer: (params) => (
+			  <Addtraining 
+				saveTraining={saveTraining}
+				customerId={params.data.links[0].href}
+			  />
+			),
+			sortable: false,
+		  },*/
+		]
+	  }];
+
+	return (
+		
+			      
+	<div
     className="ag-theme-material"
     style={{
-    height: '700px',
-    width: '80%',
-    margin: 'auto',
-    }}
+    height: '7000px',
+    width: '95%',
+	margin: 'auto'    }}
     >
-
-
-     <AgGridReact
-      ref={gridRef}
-      onGridReady={ params => gridRef.current = params.api }
-      rowSelection="single"
-      columnDefs={columns}
-      rowData={customers}>
-     </AgGridReact>
-     </div>
-    </div>
-  );
-};
-
-export default CustomerList;
+			<Addcustomer saveCustomer={saveCustomer} />
+			<AgGridReact
+               rowData={customers}
+               columnDefs={columnDefs}
+               defaultColDef={defaultColDef}
+			   options={{ sorting: true }}
+           ></AgGridReact>
+		</div>
+	);
+}
