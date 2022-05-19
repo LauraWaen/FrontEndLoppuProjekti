@@ -82,7 +82,7 @@ export default function Traininglist() {
 			cellRenderer: (params) => (
 				<DeleteIcon
 					style={{ cursor: "pointer" }}
-					onClick={() => deleteTraining(params.data.links[0].href)}
+					onClick={() => deleteTraining(params.data.id)}
 				></DeleteIcon>
 			),
 			sorting: false
